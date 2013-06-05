@@ -1,0 +1,77 @@
+<html>
+<head>
+<script src="lib/d3/d3.v3.js" charset="utf-8"></script>
+</head>
+<body>
+	<svg></svg>
+
+	<script type="text/javascript">
+		console.log(d3.version);
+
+		function getMod(i,j){
+			return (!(i%2==0) ^ !(j%2) )? 'dark':'clear'; 
+		}
+
+		var marginx=20;
+		var marginy=20;
+		var widthx=50;
+		var widthy=50;
+		var nx=8;
+		var ny=8;
+		var val='';
+		var anglerange=40
+		var scalerange=0.5
+		var colorBoard={'clear':'#FEB','dark':'#383'}
+		var colortext={'clear':'#383','dark':'#FEB'}
+		var alphabet=['a','b','c','d','e','f','g','h'];
+
+
+		function createSquare(val){
+				//function necessari in order to create squres
+				ng.append('rect')
+				   .attr('x',0)
+				   .attr('y',0)
+				   .attr('width',widthx)
+				   .attr('height',widthy)
+				   .style('fill',colorBoard[val])
+				   .style('stroke','black') 
+				   .style('stroke-width',1);
+
+				ng.append('text')
+				  .text(alphabet[j]+i)
+				  .attr('x',2)
+				  .attr('y',46)
+				  .style('fill',colortext[val])
+				  .style('font-size',8)
+				  .style('font-family','"Helvetica Neue", Arial, Helvetica, Geneva, sans-serif')
+		}
+
+		var svg = d3.select('svg');
+
+		for(j=0;j<ny;j++){
+			for(i=0;i<nx;i++){
+
+				n=j+i*nx
+				//xor between X and Y to find the color
+				
+				var xpos=marginx+widthx*j;
+				var ypos=marginy+widthy*i;
+				var randomangle=Math.random()*anglerange-(anglerange/2)
+				var randomScale=1+(Math.random()*scalerange-scalerange/2)
+
+				var ng=svg.append('g')
+						  .attr('transform'
+						  		,'translate('+xpos+','+ypos+')\
+						  		rotate('+randomangle+','+widthx/2+','+widthy/2+')\
+						  		scale('+randomScale+')')
+
+				mode = getMod(i,j)
+				createSquare(mode);
+
+
+			}
+		}
+		
+	</script>
+</body>
+</html>	

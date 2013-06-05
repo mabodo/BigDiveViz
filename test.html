@@ -1,0 +1,43 @@
+<html>
+<head>
+	<style type="text/css">
+		#container{
+			fill: #eee;
+		}
+		.box{
+			stroke:rgba(0,0,0,0.5);
+			stroke-width:1;
+		}
+		#country .box{
+			fill: #ffa500;
+		}
+		#athle .box{
+			fill:#4169e1;
+		}
+		.num{
+			fill: white;
+		}
+		svg text{
+			font-family: "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+			text-anchor:middle;
+		}
+
+
+	</style>
+</head>
+<body>
+	<svg>
+		<rect x="1" y="1" width="500" height="240" id="container" ></rect>
+		<g id="country" transform="translate(0,0)">
+			<text x="130" y="50" font-size="20" class="name">N. of Countries</text>
+			<rect x="20" y="70" width="220" height="150" class="box" stroke="black" />
+			<text class="num" x="130" y="145" font-size="20">205</text>
+		</g>
+		<g id="athle" transform="translate(240,0)">
+			<text x="130" y="50" font-size="20" class="name">N. of Atletes</text>
+			<rect x="20" y="70" width="220" height="150" class="box" />
+			<text class="num" x="130" y="145" font-size="20">10422</text>
+		</g>
+    </svg>
+</body>
+</html>

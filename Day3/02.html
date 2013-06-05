@@ -1,0 +1,136 @@
+<html>
+<head>
+<script src="lib/d3/d3.v3.js" charset="utf-8"></script>
+</head>
+<body>
+
+
+	<script type="text/javascript">
+		console.log(d3.version);
+		var ncols=17
+		var distsx=40
+		var distsy=40/Math.sqrt(2)
+		var marginx=10
+		var marginy=100
+
+		var arrayColors=['#EE0000','#0088FF','#00FF00','#FFFF00','#000000']
+
+		d3.json('../data/athletes.json',function(data){
+
+			var maxAthletes = d3.max(data,function(d){
+				return d.values.athletes
+			})
+
+			var mapSize= d3.scale.pow()
+								.exponent(.5)
+								.domain([1,maxAthletes])
+								.range([3,40])  
+			
+
+			var body=d3.select('body');
+			var svg = body.append('svg')
+							.attr('width',document.width)
+							.attr('height',Math.ceil(1+data.length/ncols) *distsy*2)
+
+			svg.append('text')
+				.attr('x',300)
+				.attr('y',50)
+				.attr('id','textCountry')
+				.text('')
+				.style('fill','black')
+				.style('text-anchor','end')
+				.style('font-size',20)
+				.style('font-family','"Helvetica Neue", Arial, Helvetica, Geneva, sans-serif')
+
+			svg.append('text')
+				.attr('x',300)
+				.attr('y',50)
+				.attr('id','textN')
+				.text('')
+				.style('fill','black')
+				.style('text-anchor','start')
+				.style('font-size',20)
+				.style('font-family','"Helvetica Neue", Arial, Helvetica, Geneva, sans-serif')				
+
+			var bigg=svg.append('g')
+
+			var g=bigg.selectAll('circle')
+				.data(data)
+				.enter()
+				.append('g')
+				.attr('transform',function(d,i){
+					ypos=distsy+distsy*Math.floor(i/ncols)  +  marginy;
+					ypos=1000+Math.random()*800
+					xpos=distsx+(i%ncols)*distsx + marginx;
+					if (Math.floor(i/ncols)%2==0){
+						xpos+=distsx/2;
+					}
+					return 'translate('+xpos+','+ypos+')'
+				})
+
+			g.transition()
+				.duration(4000)
+				.attr('transform',function(d,i){
+					ypos=distsy+distsy*Math.floor(i/ncols)  +  marginy;
+					xpos=distsx+(i%ncols)*distsx + marginx;
+					if (Math.floor(i/ncols)%2==0){
+						xpos+=distsx/2;
+					}
+					return 'translate('+xpos+','+ypos+')'
+				})
+
+			g.append('circle')
+				.attr('r',1)
+				.attr('fill-opacity','0.1')
+				.attr('fill','#008888')
+				.attr('stroke',function(){
+					rand_inx=Math.floor(Math.random() * arrayColors.length)
+					return arrayColors[rand_inx];
+				})
+				.attr('stroke-width',3)
+
+				.on('mouseover',function(d,i){
+					d3.select('#textCountry').text(d.key+': ')
+					d3.select('#textN').text(d.values.athletes)
+					d3.select(this).style('fill-opacity',1);
+				})
+				.on('mouseout',function(d,i){
+					d3.select(this).style('fill-opacity',0.1);
+
+				})
+				.transition()
+				.duration(1000)
+				.delay(function(d,i){return i*5})
+				.attr('r',function(d,i){
+					return mapSize(d.values.athletes);
+				})
+
+
+			/*g.append('text')
+				.text(function(d,i){
+					return d.values.athletes
+				})
+				.style('text-anchor','middle')
+				.style('font-size',20)
+				.style('font-family','"Helvetica Neue", Arial, Helvetica, Geneva, sans-serif')
+				.style('fill','#000')
+				.style('opacity','0')
+				.on('mouseover',function(d,i){
+					console.log(d)
+					d3.select(this)
+						.style('opacity','1')
+				})
+				.on('mouseout',function(){
+					d3.select(this)
+						.style('opacity','0')
+				})*/
+
+
+
+
+
+		});
+		
+	</script>
+</body>
+</html>
