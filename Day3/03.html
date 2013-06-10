@@ -1,0 +1,101 @@
+<html>
+<head>
+		<script src="lib/d3.v3.js" charset="utf-8"></script>
+</head>
+<body>
+	<script type="text/javascript">
+		 	d3.csv('../data/olympics.csv',function(data){
+			//console.log(data)
+			body = d3.select('body')
+			svg = body.append('svg')
+					.attr('height',500)
+					.attr('width',1000)
+
+			//nest all the contries by the country of the athlete
+
+			sumMale = function(d){
+				return d3.sum(d,function(d2){
+					return d2.Sex == 'M' ? 1 : 0
+				})
+			}
+
+			sumFem = function(d){
+				return d3.sum(d,function(d2){
+					return d2.Sex == 'F' ? 1 : 0
+				})
+			}			
+
+			var rollup_data = d3.nest()
+								.key(function(d){
+									return d.Weight
+								})
+								.sortKeys(function(a,b){
+									return parseInt(a)>parseInt(b)? 1:-1
+								})
+								.rollup(function(d){
+									return {
+										'total':d.length,
+										'M':sumMale(d),
+										'F':sumFem(d)
+									}
+								})
+								.entries(data)
+
+			console.log(rollup_data)
+			//visualize
+
+			var maxHeight=200;
+			var c_width = (0.8*svg.attr('width'))/rollup_data.length
+			console.log(c_width)
+
+			var maxVal = d3.max(rollup_data,function(d){
+				return d.values.total
+			})
+
+			console.log( maxVal )
+			var mapH= d3.scale.linear()
+								.domain([1,maxVal])
+								.range([3,maxHeight])  
+
+			//console.log(by_countries.Keys())
+			group = svg.selectAll('g')
+			  .data(rollup_data)
+			  .enter()
+			  .append('g')
+			  .attr('transform',function(d,i){
+			  	return 'translate('+(i*c_width)+','+maxHeight+')'	
+			  })
+
+			group.append('text')
+			     .text(function(d,i){
+			     	return d.key
+			     })
+			     .attr('transform','rotate(60,0,10) translate(0,10)')
+			     .style("font-size",8)
+
+			group.append('rect')
+				 .attr('width',c_width)
+				 .attr('height',function(d,i){
+					return mapH(d.values.M)
+				 })
+				 .attr('y',function(d,i){
+					return -mapH(d.values.M)
+				 })
+				 .attr('fill','#00A')
+				 .attr('stroke','black')
+
+			group.append('rect')
+				 .attr('width',c_width)
+				 .attr('height',function(d,i){
+					return mapH(d.values.F)
+				 })
+				 .attr('y',function(d,i){
+					return -mapH(d.values.F)-mapH(d.values.M)
+				 })
+				 .attr('fill','#F0A')
+				 .attr('stroke','black')
+
+		})
+	</script>
+</body>
+</html>

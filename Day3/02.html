@@ -10,8 +10,8 @@
 		var ncols=17
 		var distsx=40
 		var distsy=40/Math.sqrt(2)
-		var marginx=10
-		var marginy=100
+		var marginx=25
+		var marginy=8
 
 		var arrayColors=['#EE0000','#0088FF','#00FF00','#FFFF00','#000000']
 
@@ -33,24 +33,16 @@
 							.attr('height',Math.ceil(1+data.length/ncols) *distsy*2)
 
 			svg.append('text')
-				.attr('x',300)
-				.attr('y',50)
 				.attr('id','textCountry')
-				.text('')
+				.attr('x',12)
+				.attr('y',185)
+				.attr('dy','0.5em')
+				.text('') 
 				.style('fill','black')
-				.style('text-anchor','end')
+				.style('text-anchor','middle')
 				.style('font-size',20)
-				.style('font-family','"Helvetica Neue", Arial, Helvetica, Geneva, sans-serif')
-
-			svg.append('text')
-				.attr('x',300)
-				.attr('y',50)
-				.attr('id','textN')
-				.text('')
-				.style('fill','black')
-				.style('text-anchor','start')
-				.style('font-size',20)
-				.style('font-family','"Helvetica Neue", Arial, Helvetica, Geneva, sans-serif')				
+				.style('font-family','"Helvetica Neue", Arial, Helvetica, Geneva, sans-serif')		
+				.attr('transform','rotate(-90,10,185)')	
 
 			var bigg=svg.append('g')
 
@@ -67,6 +59,35 @@
 					}
 					return 'translate('+xpos+','+ypos+')'
 				})
+				.on('mouseover',function(d,i){
+					d3.select('#textCountry').text(d.key)
+					//d3.select('#textN').text(d.values.athletes)
+					d3.select(this)
+					  .select('circle')
+					  .transition()
+					  .duration(100)
+					  .style('fill-opacity',0.5)
+					  .transition()
+					  .duration(200)
+					  .style('fill-opacity',0.4)
+					d3.select(this)
+						.select('text')
+						.transition()
+						.duration(100)
+						.style('fill-opacity',1)
+				})
+				.on('mouseout',function(d,i){
+					d3.select(this)
+					  .select('circle')
+					  .transition()
+					  .duration(500)
+					  .style('fill-opacity',0.1);
+					d3.select(this)
+					  .select('text')
+					  .transition()
+					  .duration(100)
+					  .style('fill-opacity',0)
+				})
 
 			g.transition()
 				.duration(4000)
@@ -79,6 +100,7 @@
 					return 'translate('+xpos+','+ypos+')'
 				})
 
+
 			g.append('circle')
 				.attr('r',1)
 				.attr('fill-opacity','0.1')
@@ -88,16 +110,6 @@
 					return arrayColors[rand_inx];
 				})
 				.attr('stroke-width',3)
-
-				.on('mouseover',function(d,i){
-					d3.select('#textCountry').text(d.key+': ')
-					d3.select('#textN').text(d.values.athletes)
-					d3.select(this).style('fill-opacity',1);
-				})
-				.on('mouseout',function(d,i){
-					d3.select(this).style('fill-opacity',0.1);
-
-				})
 				.transition()
 				.duration(1000)
 				.delay(function(d,i){return i*5})
@@ -106,16 +118,20 @@
 				})
 
 
-			/*g.append('text')
+			g.append('text')
 				.text(function(d,i){
 					return d.values.athletes
 				})
+				.attr('dy','0.5em')
 				.style('text-anchor','middle')
-				.style('font-size',20)
+				.style('font-size',12)
 				.style('font-family','"Helvetica Neue", Arial, Helvetica, Geneva, sans-serif')
 				.style('fill','#000')
-				.style('opacity','0')
-				.on('mouseover',function(d,i){
+				.style('fill-opacity','0')
+				.style('font-weight','bold')
+				.style('fill','white')
+				
+				/*.on('mouseover',function(d,i){
 					console.log(d)
 					d3.select(this)
 						.style('opacity','1')

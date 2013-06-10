@@ -1,0 +1,138 @@
+<html>
+	<head>
+		<script src="lib/d3/d3.v3.js" charset="utf-8"></script>
+	</head>
+	<body>
+	<svg></svg>
+		<script type="text/javascript">
+
+			d3.csv('../data/olympics.csv',function(data){
+				console.log(data);
+				Ages = d3.nest()
+						 .key(function(d){
+						 	return d.Age
+						 })
+						 .sortKeys(d3.ascending)
+						 .rollup(function(d,i){
+						 	nMedal = d3.sum(d,function(athl,i){
+						 		return athl.Medals=='YES'? 1:0
+						 	})
+						 	nBronz = d3.sum(d,function(athl,i){
+						 		return athl.Bronze
+						 	})	
+						 	nGold = d3.sum(d,function(athl,i){
+						 		return athl.Gold
+						 	})	
+						 	nSilver = d3.sum(d,function(athl,i){
+						 		return athl.Silver
+						 	})	
+
+						 	nAthl = d.length
+						 	return {Medals:nMedal,Athlets:nAthl,Bronzes:nBronz,Silvers:nSilver,Golds:nGold}
+						 })
+
+						 .entries(data)
+
+				console.log(Ages.length)
+
+
+
+
+				var svg = d3.select('svg')
+
+				var Gold = d3.range(Ages.length).map(function(d){
+					return Ages[d].values.Golds
+				})
+				var Silver = d3.range(Ages.length).map(function(d){
+					return Ages[d].values.Silvers
+				})
+				var Bronze = d3.range(Ages.length).map(function(d){
+					return Ages[d].values.Bronzes
+				})								
+
+				mx = d3.max([d3.max(Gold),d3.max(Silver),d3.max(Bronze)])
+				
+				mn = 0
+				var mapx = d3.scale.linear()
+									.domain([0,Gold.length])
+									.range([0,document.width])
+
+
+
+
+				var mapy = d3.scale.linear()
+									.domain([mn,mx])
+									.range([200,0])
+
+
+				/*var myline = d3.svg.line()
+								.x(function(d,i){
+									return mapx(i);
+								})
+								.y(function(d,i){
+									return mapy(d);
+								})
+								.interpolate('cardinal')
+
+				var myArea = d3.svg.area()
+								.x(function(d,i){
+									return mapx(i)
+								})
+								.y(function(d,i){
+									return mapy(d)
+								})
+								.y0(mapy(0))
+								.interpolate('cardinal')
+
+
+				svg.append('path')
+					.attr('d',myArea(data))
+					.style('fill','red')*/
+
+				svg.selectAll('.Gold')
+					.data(Gold)
+					.enter()
+					.append('circle')
+					.attr('class','Gold')
+					.attr('cx',function(d,i){
+						return mapx(i)
+					})
+					.attr('cy',function(d,i){
+						return mapy(d)
+					})
+					.attr('r',2)
+					.attr('fill','#AAAA00')
+
+				svg.selectAll('.Siver')
+					.data(Silver)
+					.enter()
+					.append('circle')
+					.attr('class','Silver')
+					.attr('cx',function(d,i){
+						return mapx(i)
+					})
+					.attr('cy',function(d,i){
+						return mapy(d)
+					})
+					.attr('r',2)
+					.attr('fill','#888888')					
+
+				svg.selectAll('.Bronze')
+					.data(Bronze)
+					.enter()
+					.append('circle')
+					.attr('class','Bronze')
+					.attr('cx',function(d,i){
+						return mapx(i)
+					})
+					.attr('cy',function(d,i){
+						return mapy(d)
+					})
+					.attr('r',2)
+					.attr('fill','#FFAA00')					
+			})
+
+			
+		</script>
+	</body>
+</html>

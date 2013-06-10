@@ -1,0 +1,48 @@
+<html>
+	<head>
+		<script src="lib/d3/d3.v3.js" charset="utf-8"></script>
+	</head>
+<body>
+	<svg></svg>
+	<script type="text/javascript">
+		var svg = d3.select('svg')
+
+		var myarc = d3.svg.arc()
+						.innerRadius(10)
+						.outerRadius(50)
+						//.startAngle(0)
+						//.endAngle(Math.PI/3)
+
+		/*svg.append('path')
+			.attr('d',myarc)
+			.style('fill','red')
+			.attr('transform','translate(100,100)')*/
+
+		var data = d3.range(6).map(function(d){
+			return Math.random()*20
+		})
+
+		var myPie = d3.layout.pie()
+						.value(function(d){
+							return d
+						})
+		
+		var colors = d3.scale.category20()
+
+		svg.append('g')
+			.attr('transform','translate(100,100)')
+			.selectAll('path')
+			.data(myPie(data))
+			.enter()
+				.append('path')
+				.attr('d',myarc)
+				.style('fill',function(d,i){
+					return colors(i);
+				})
+				.attr('transform',function(d,i){
+					return 'scale('+i+')'
+				})
+
+	</script>
+</body>
+</html>
